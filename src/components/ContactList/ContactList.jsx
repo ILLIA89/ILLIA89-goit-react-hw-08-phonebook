@@ -1,7 +1,7 @@
-import css from 'components/ContactList/ContactList.module.css';
+import { List, Item, Button } from './ContactList.styled';
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteContact } from '../../redux/operations';
-import { getAllContacts } from 'redux/selectors/selectors';
+import { deleteContact } from '../../redux/Contact/operations';
+import { getAllContacts } from 'redux/Contact/selectors';
 
 export const ContactList = () => {
   const contacts = useSelector(getAllContacts);
@@ -9,22 +9,18 @@ export const ContactList = () => {
 
   return (
     <>
-      <ul className={css.contactList}>
+      <List>
         {contacts.map(({ name, id, number }) => {
           return (
-            <li key={id} className={css.item}>
+            <Item key={id}>
               {name} : {number}
-              <button
-                type="button"
-                className={css.btnContactList}
-                onClick={() => dispatch(deleteContact(id))}
-              >
+              <Button type="button" onClick={() => dispatch(deleteContact(id))}>
                 Delete
-              </button>
-            </li>
+              </Button>
+            </Item>
           );
         })}
-      </ul>
+      </List>
     </>
   );
 };

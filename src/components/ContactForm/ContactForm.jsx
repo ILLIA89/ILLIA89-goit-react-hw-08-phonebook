@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import shortid from 'shortid';
-import css from 'components/ContactForm/ContactForm.module.css';
-import { addContact } from '../../redux/operations';
-import { getContactsValue } from 'redux/selectors/selectors';
+import { Form, Button, InputForm, LabelForm } from './ContactForm.styled';
+import { addContact } from '../../redux/Contact/operations';
+import { getContactsValue } from 'redux/Contact/selectors';
 import { useSelector, useDispatch } from 'react-redux';
 
 export const ContactForm = () => {
@@ -57,10 +57,9 @@ export const ContactForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className={css.form}>
-      <label className={css.label}>Name</label>
-
-      <input
+    <Form onSubmit={handleSubmit}>
+      <LabelForm> Name </LabelForm>
+      <InputForm
         type="text"
         name="name"
         value={name}
@@ -68,12 +67,11 @@ export const ContactForm = () => {
         title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
         required
         onChange={handleInputChange}
-        className={css.inputForm}
       />
 
-      <label className={css.label}>Number</label>
+      <LabelForm> Number </LabelForm>
 
-      <input
+      <InputForm
         type="tel"
         name="number"
         value={number}
@@ -81,12 +79,8 @@ export const ContactForm = () => {
         title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
         required
         onChange={handleInputChange}
-        className={css.inputForm}
       />
-
-      <button type="submit" className={css.btnForm}>
-        Add contact
-      </button>
-    </form>
+      <Button type="submit"> Add contact </Button>
+    </Form>
   );
 };

@@ -1,7 +1,7 @@
-import css from 'components/Filter/Filter.module.css';
+import { LabelFilter, InputFilter } from './Filter.styled';
 import { useSelector, useDispatch } from 'react-redux';
-import { getFilterValue } from 'redux/selectors/selectors';
-import { setFilter } from 'redux/filterSlice';
+import { getFilterValue } from 'redux/Contact/selectors';
+import { setFilter } from 'redux/Contact/filterSlice';
 
 export const Filter = () => {
   const filterValue = useSelector(getFilterValue);
@@ -9,10 +9,9 @@ export const Filter = () => {
 
   return (
     <div>
-      <label className={css.labelFilter}>Find contacts by name</label>
+      <LabelFilter>Find contacts by name</LabelFilter>
 
-      <input
-        className={css.inputFilter}
+      <InputFilter
         type="text"
         value={filterValue}
         name="filter"

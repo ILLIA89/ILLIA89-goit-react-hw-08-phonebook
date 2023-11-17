@@ -1,52 +1,50 @@
-import css from 'components/App.module.css';
-import { ContactForm } from './ContactForm/ContactForm';
-import { Filter } from './Filter/Filter';
-import { ContactList } from './ContactList/ContactList';
-import { useSelector, useDispatch } from 'react-redux';
-import { useEffect } from 'react';
-import { selectError, selectIsLoading } from '../redux/selectors/selectors';
-import { ThreeDots } from 'react-loader-spinner';
-import { fetchContacts } from '../redux/operations';
-import { getAllContacts } from 'redux/selectors/selectors';
+import { Route, Routes } from 'react-router-dom';
+import { useAuth } from 'hooks/hooks';
+import { lazy, useEffect } from 'react';
+import { Layout } from './Layout/Layout';
+import { useDispatch } from 'react-redux';
+import { refreshUser } from 'redux/Auth/auth.thunk';
+import { PrivateRoute } from './PrivateRoute';
+import { RestrictedRoute } from './RestrictedRoute';
+
+const Home = lazy(() => import('pages/Home/Home'));
+const Register = lazy(() => import('pages/Register/Register'));
+const Login = lazy(() => import('pages/Login/Login'));
+const Contacts = lazy(() => import('pages/Contacts/Contacts'));
 
 export const App = () => {
-  const contacts = useSelector(getAllContacts);
-  const error = useSelector(selectError);
-  const isLoading = useSelector(selectIsLoading);
   const dispatch = useDispatch();
+  const { isRefreshing } = useAuth;
 
   useEffect(() => {
-    dispatch(fetchContacts());
+    dispatch(refreshUser());
   }, [dispatch]);
 
-  return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101',
-      }}
-    >
-      <div>
-        <h1 className={css.title}>Phonebook</h1>
-        <ContactForm />
-        <h2 className={css.title}>Contacts</h2>
-        <Filter />
-        {isLoading && !error ? (
-          <div className={css.loader}>
-            <ThreeDots />
-          </div>
-        ) : (
-          <ContactList />
-        )}
-        {!contacts.length && (
-          <p className={css.messageUser}>
-            There are no contacts in the Phonebook
-          </p>
-        )}
-      </div>
-    </div>
+  return isRefreshing ? (
+    <b>Refreshing user...</b>
+  ) : (
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Home />} />
+        <Route
+          path="/register"
+          element={
+            <RestrictedRoute component={<Register />} redirectTo="/contacts" />
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <RestrictedRoute component={<Login />} redirectTo="/contacts" />
+          }
+        />
+        <Route
+          path="/contacts"
+          element={
+            <PrivateRoute component={<Contacts />} redirectTo="/login" />
+          }
+        />
+      </Route>
+    </Routes>
   );
 };
